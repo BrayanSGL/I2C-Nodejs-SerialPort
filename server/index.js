@@ -1,21 +1,36 @@
-const express = require("express");
-const app = express();
+const express = require("express"); //Libreria del servidor
+const app = express(); //Ejecutar el server y crear el objeto app
 
-const { SerialPort, ReadlineParser } = require("serialport");
-const parser = new ReadlineParser();
+const { SerialPort, ReadlineParser } = require("serialport"); //Librerias para el serialport
+const parser = new ReadlineParser(); //Objeto del serial port
 
-const port = new SerialPort({ path: "COM3", baudRate: 9600 });
-port.pipe(parser);
+let port;
+
+const setConectionPort = (newPort) => {
+  port = new SerialPort({ path: newPort, baudRate: 9600 });
+  port.pipe(parser);
+};
+
+setConectionPort("COM3");
+
+// midleware
+
+app.use(express.static("static")); //Usar la carpeta static
+app.use("/static", express.static("static"));
 
 parser.on("data", (data) => {
   console.log("data", data);
 });
 
-app.get('/rojo', (req, res) => {
+app.get("/", (req, res) => {
+  res.sendFile(__dirname+"/index.html");
+});
+
+app.get("/rojo", (req, res) => {
   port.write("1");
 });
 
-app.get('/verde', (req, res) => {
+app.get("/verde", (req, res) => {
   port.write("0");
 });
 

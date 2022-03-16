@@ -1,18 +1,12 @@
 const express = require("express"); //Libreria del servidor
 const app = express(); //Ejecutar el server y crear el objeto app
-const server = require("http").Server(app);
+const http = require("http");
+const server = http.createServer(app);
 const io = require("socket.io")(server);
 
-//const http = require("http");
-//const socketIO = require("socket.io");
 
-/*server.listen(3000, function () {
-  console.log("server listening on port", 3000);
-});*/
-
-io.on("connection", function () {
-  console.log("Nuevo cliente conectado");
-  socket.emit("mensaje", "Bienvenido");
+io.on("connection", function (socket) {
+  console.log("a user connected");
 });
 
 //Comunicación serial
@@ -26,7 +20,7 @@ const setConectionPort = (newPort) => {
   port.pipe(parser);
 };
 
-setConectionPort("COM3");
+setConectionPort("COM5");
 
 // midleware
 
@@ -59,6 +53,8 @@ app.get("/verde", (req, res) => {
   port.write("0");
 });
 
-app.listen(3000, () => {
+server.listen(3000, () => {
   console.log("Server is running on port 3000");
 });
+
+

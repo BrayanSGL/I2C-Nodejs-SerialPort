@@ -53,7 +53,7 @@ app.get("/verde", (req, res) => {
   port.write("0");
 });
 
-server.listen(3000, () => {
+server.listen(3001, () => {
   console.log("Server is running on port 3000");
 });
 

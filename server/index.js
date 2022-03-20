@@ -2,8 +2,11 @@ const express = require("express"); //Libreria del servidor
 const app = express(); //Ejecutar el server y crear el objeto app
 const http = require("http");
 const server = http.createServer(app);
-const io = require("socket.io")(server);
+const io = require("socket.io")(server, {cors: {origin: "*"}});
+const cors = require('cors')
 
+
+app.use(cors());
 
 io.on("connection", function (socket) {
   console.log("a user connected");
@@ -23,7 +26,6 @@ const setConectionPort = (newPort) => {
 setConectionPort("COM5");
 
 // midleware
-
 app.use(express.static("static")); //Usar la carpeta static
 app.use("/static", express.static("static"));
 
@@ -32,7 +34,7 @@ parser.on("open", function () {
 });
 
 parser.on("data", (data) => {
-  let temp = parseInt(data, 10) + " °C";
+  let temp = parseInt(data, 10);
   console.log(temp);
   io.emit("temp", data);
 });
@@ -52,6 +54,7 @@ app.get("/rojo", (req, res) => {
 app.get("/verde", (req, res) => {
   port.write("0");
 });
+
 
 server.listen(3001, () => {
   console.log("Server is running on port 3000");

@@ -1,39 +1,51 @@
-import './temperatura.css';
-import React from "react";
+import "./temperatura.css";
+import React, { useState, useEffect } from "react";
+import socketIOClient from "socket.io-client";
 
 import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
+  Chart,
+  Series,
+  ArgumentAxis,
+  CommonSeriesSettings,
+  Margin,
+  Export,
   Legend,
-} from "chart.js";
-import { Line } from "react-chartjs-2";
-
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend
-);
-
+} from "devextreme-react/chart";
+//Los datos
+const ENDPOINT = "http://127.0.0.1:3001";
+// const dataSource = [
+//   {
+//     time: "1",
+//     temperatura: 22.5,
+//   },
+//   {
+//     time: "2",
+//     temperatura: 27.5,
+//   },
+//   {
+//     time: "3",
+//     temperatura: 24.5,
+//   },
+// ];
 
 const TemperaturaView = () => {
-  const data = {
-    labels: ["Jun", "Jul", "Aug"],
-    datasets: [
-      {
-        label: "Temperatura",
-        data: [5, 6, 7],
+  const [dataSource, setDataSource] = useState([]);
+  const [temperatura, setTemperatura] = useState();
+
+  useEffect(() => {
+    const socket = socketIOClient(ENDPOINT);
+    socket.on("temp", (data) => {
+      console.log(dataSource)
+      // setTemperatura(parseFloat(data));
+      if (dataSource.length > 10) {
+        // setDataSource(dataSource.slice(1));
       }
-    ],
-  };
+      setDataSource(dataSource => [...dataSource, {
+        temperatura: parseFloat(data.slice(1)),
+        time: new Date().toLocaleTimeString(),
+      }]);
+    });
+  }, []);
 
   return (
     <>
@@ -41,11 +53,25 @@ const TemperaturaView = () => {
         <h2>ELVIS COCHO</h2>
       </header>
       <div>
-        <section >
+        <section>
           grafica
-          <Line data={data} className="grafica"/>
+          <Chart
+            palette="Dark Violet"
+            title="La Temperatura del AMBIENTE"
+            dataSource={dataSource}>
+            <CommonSeriesSettings
+              argumentField="time"
+              type={"stackedsplinearea"}
+            />
+            <Series valueField="temperatura" name="Temperatura"></Series>
+            <ArgumentAxis valueMarginsEnabled={false} />
+            <Legend verticalAlignment="bottom" horizontalAlignment="center" />
+            <Margin bottom={20} />
+            <Export enabled={false} />
+          </Chart>
         </section>
         <div>
+        {temperatura}
           <button>Ventilador</button>
           <button>Esclusa</button>
         </div>

@@ -15,7 +15,7 @@ import {
 const ENDPOINT = "http://127.0.0.1:3001";
 const socket = socketIOClient(ENDPOINT);
 // const dataSource = [
-  //   {
+//   {
 //     time: "1",
 //     temperatura: 22.5,
 //   },
@@ -36,29 +36,31 @@ const TemperaturaView = () => {
   useEffect(() => {
     let alfa = [];
     socket.on("temp", (data) => {
-      if (alfa.length > 10) {
-        alfa = alfa.slice(1);
+      if (data < 100) {
+        if (alfa.length > 10) {
+          alfa = alfa.slice(1);
+        }
+        alfa = [
+          ...alfa,
+          {
+            temperatura: parseFloat(data),
+            time: new Date().toLocaleTimeString(),
+          },
+        ];
+        //console.log(alfa);
+        setTemperatura(parseFloat(data));
+        if (dataSource.length > 10) {
+          // setDataSource(dataSource.slice(1));
+        }
+        setDataSource(alfa);
       }
-      alfa = [
-        ...alfa,
-        {
-          temperatura: parseFloat(data),
-          time: new Date().toLocaleTimeString(),
-        },
-      ];
-      //console.log(alfa);
-      setTemperatura(parseFloat(data));
-      if (dataSource.length > 10) {
-        // setDataSource(dataSource.slice(1));
-      }
-      setDataSource(alfa);
     });
   }, []);
 
-  const sendData=(data)=>{
-    fetch('http://localhost:3001/'+data,{method:'GET'})
-    console.log('entra')
-  }
+  const sendData = (data) => {
+    fetch("http://localhost:3001/" + data, { method: "GET" });
+    console.log("entra");
+  };
 
   return (
     <>
@@ -84,9 +86,15 @@ const TemperaturaView = () => {
           </Chart>
         </section>
         <div className="container_btn">
-          <button className="btn" onClick={()=>sendData('Motor')}>Ventilador</button>
-          <button className="btn" onClick={()=>sendData('Servo')}>Esclusa</button>
-          <button className="btn" onClick={()=>sendData('Stop')}>Detener</button>
+          <button className="btn" onClick={() => sendData("Motor")}>
+            Ventilador
+          </button>
+          <button className="btn" onClick={() => sendData("Servo")}>
+            Esclusa
+          </button>
+          <button className="btn" onClick={() => sendData("Stop")}>
+            Detener
+          </button>
         </div>
       </div>
     </>

@@ -30,35 +30,46 @@ const ENDPOINT = "http://127.0.0.1:3001";
 
 const TemperaturaView = () => {
   const [dataSource, setDataSource] = useState([]);
-  const [temperatura, setTemperatura] = useState();
+  const [temperaturaActual, setTemperatura] = useState();
 
   useEffect(() => {
+    let alfa = [];
     const socket = socketIOClient(ENDPOINT);
     socket.on("temp", (data) => {
-      console.log(dataSource)
-      // setTemperatura(parseFloat(data));
+      if (alfa.length > 10) {
+        alfa = alfa.slice(1);
+      }
+      alfa = [
+        ...alfa,
+        {
+          temperatura: parseFloat(data),
+          time: new Date().toLocaleTimeString(),
+        },
+      ];
+      console.log(alfa);
+      setTemperatura(parseFloat(data));
       if (dataSource.length > 10) {
         // setDataSource(dataSource.slice(1));
       }
-      setDataSource(dataSource => [...dataSource, {
-        temperatura: parseFloat(data.slice(1)),
-        time: new Date().toLocaleTimeString(),
-      }]);
+      setDataSource(alfa);
     });
   }, []);
 
   return (
     <>
-      <header>
-        <h2>ELVIS COCHO</h2>
-      </header>
+      {/* <header>
+        <h2>EMPRESA DE ELVIS COCHO</h2>
+      </header> */}
       <div>
-        <section>
-          grafica
+        <section className="container_graf">
+          <div className="indicador">
+            <h2>La temperatura del ambiente es: {temperaturaActual} </h2>
+          </div>
           <Chart
             palette="Dark Violet"
-            title="La Temperatura del AMBIENTE"
-            dataSource={dataSource}>
+            //title="La Temperatura del AMBIENTE"
+            dataSource={dataSource}
+          >
             <CommonSeriesSettings
               argumentField="time"
               type={"stackedsplinearea"}
@@ -70,10 +81,10 @@ const TemperaturaView = () => {
             <Export enabled={false} />
           </Chart>
         </section>
-        <div>
-        {temperatura}
-          <button>Ventilador</button>
-          <button>Esclusa</button>
+        <div className="container_btn">
+          <button className="btn">Ventilador</button>
+          <button className="btn">Esclusa</button>
+          <button className="btn">Detener</button>
         </div>
       </div>
     </>

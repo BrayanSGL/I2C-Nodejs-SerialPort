@@ -1,6 +1,55 @@
 .grafica {
   width: 90% !important;
-  
+
   /* height: 400px !important; */
   margin: 0 auto;
+}
+.btn {
+  padding: 10px 15px;
+  border-radius: 8px;
+  outline: none;
+  border: none;
+  color: rgb(255, 255, 255);
+  background-color: rgb(106, 33, 175);
+  cursor: pointer;
+}
+
+.btn:hover {
+  background-color: rgb(117, 35, 194);
+}
+.btn:active {
+  background-color: rgb(128, 36, 214);
+}
+
+.container_btn {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+@media (min-width: 700px) {
+  .container_graf {
+    padding: 5px 2rem;
+    margin-top: 7rem;
+  }
+}
+
+.container_graf .indicador{
+font-family: Arial, Helvetica, sans-serif;
+color: rgb(24, 22, 22);
+text-align: center;
+
+}
+
+header{
+  font-family: Arial, Helvetica, sans-serif;
+  text-align: center;
+  color: rgb(192, 180, 180);
+  font-size: large;
+  background-color: blueviolet;
+  padding: 10px;
+
+}
+
+header h2 {
+  margin: 0;
 }

@@ -23,7 +23,7 @@ const setConectionPort = (newPort) => {
   port.pipe(parser);
 };
 
-setConectionPort("COM5");
+setConectionPort("COM7");
 
 // midleware
 app.use(express.static("static")); //Usar la carpeta static
@@ -34,7 +34,7 @@ parser.on("open", function () {
 });
 
 parser.on("data", (data) => {
-  let temp = parseInt(data, 10);
+  let temp = parseFloat(data, 10);
   console.log(temp);
   io.emit("temp", data);
 });

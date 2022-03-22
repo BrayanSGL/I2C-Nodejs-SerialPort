@@ -17,8 +17,8 @@ io.on("connection", function (socket) {
 const { SerialPort, ReadlineParser } = require("serialport"); //Librerias para el serialport
 const parser = new ReadlineParser(); //Objeto del serial port
 
+let port;
 const setConectionPort = (newPort) => {
-  let port;
   port = new SerialPort({ path: newPort, baudRate: 9600 });
   port.pipe(parser);
 };
@@ -43,21 +43,24 @@ parser.on("error", function () {
   console.log(err);
 });
 
-app.get("/", (req, res) => {
-  res.sendFile(__dirname + "/index.html");
+app.get("/Motor", (req, res) => {
+  port.write('1')
+  res.send('hilo1') 
 });
 
-app.get("/rojo", (req, res) => {
-  port.write("1");
+app.get("/Servo", (req, res) => {
+  port.write('2');
+  res.send('hilo2')
 });
 
-app.get("/verde", (req, res) => {
-  port.write("0");
+app.get("/Stop", (req, res) => {
+  port.write('3');
+  res.send('hilo3')
 });
 
 
 server.listen(3001, () => {
-  console.log("Server is running on port 3000");
+  console.log("Server is running on port 3001");
 });
 
 

@@ -13,8 +13,9 @@ import {
 } from "devextreme-react/chart";
 //Los datos
 const ENDPOINT = "http://127.0.0.1:3001";
+const socket = socketIOClient(ENDPOINT);
 // const dataSource = [
-//   {
+  //   {
 //     time: "1",
 //     temperatura: 22.5,
 //   },
@@ -34,7 +35,6 @@ const TemperaturaView = () => {
 
   useEffect(() => {
     let alfa = [];
-    const socket = socketIOClient(ENDPOINT);
     socket.on("temp", (data) => {
       if (alfa.length > 10) {
         alfa = alfa.slice(1);
@@ -46,7 +46,7 @@ const TemperaturaView = () => {
           time: new Date().toLocaleTimeString(),
         },
       ];
-      console.log(alfa);
+      //console.log(alfa);
       setTemperatura(parseFloat(data));
       if (dataSource.length > 10) {
         // setDataSource(dataSource.slice(1));
@@ -55,11 +55,13 @@ const TemperaturaView = () => {
     });
   }, []);
 
+  const sendData=(data)=>{
+    fetch('http://localhost:3001/'+data,{method:'GET'})
+    console.log('entra')
+  }
+
   return (
     <>
-      {/* <header>
-        <h2>EMPRESA DE ELVIS COCHO</h2>
-      </header> */}
       <div>
         <section className="container_graf">
           <div className="indicador">
@@ -82,9 +84,9 @@ const TemperaturaView = () => {
           </Chart>
         </section>
         <div className="container_btn">
-          <button className="btn">Ventilador</button>
-          <button className="btn">Esclusa</button>
-          <button className="btn">Detener</button>
+          <button className="btn" onClick={()=>sendData('Motor')}>Ventilador</button>
+          <button className="btn" onClick={()=>sendData('Servo')}>Esclusa</button>
+          <button className="btn" onClick={()=>sendData('Stop')}>Detener</button>
         </div>
       </div>
     </>
